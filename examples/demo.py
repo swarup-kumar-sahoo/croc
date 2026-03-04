@@ -149,7 +149,6 @@ def components():
             ]),
         ]),
         
-
         # Progress
         croc.Card(title="Progress", children=[
             croc.VStack([
