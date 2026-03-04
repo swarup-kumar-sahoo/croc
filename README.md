@@ -266,15 +266,6 @@ my-app/
 
 ---
 
-## 🚀 Roadmap
-
-- [x] **v0.1** — WebSocket core, 24 components, routing, reactive state
-- [ ] **v0.2** — Hot reload, component lifecycle hooks, dark mode theming
-- [ ] **v0.3** — Static HTML export, SEO support
-- [ ] **v1.0** — Plugin system, custom components, CLI (`croc new myapp`)
-
----
-
 ## 🤝 Contributing
 
 PRs and issues welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
