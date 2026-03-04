@@ -1,5 +1,5 @@
 from typing import Callable, Dict, Optional
-from .components.base import Component
+from croc.components.base import Component
 
 
 class Router:

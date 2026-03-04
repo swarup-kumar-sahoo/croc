@@ -21,10 +21,10 @@ Example:
     app.run()
 """
 
-from .app import App
-from .state import State
-from .router import Router
-from .components import (
+from croc.app import App
+from croc.state import State
+from croc.router import Router
+from croc.components import (
     # Base
     Component,
     # Layout

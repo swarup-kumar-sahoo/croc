@@ -1,10 +1,10 @@
 import logging
 import uvicorn
 
-from .router import Router
-from .server import CrocServer
-from .state import State
-from .components import *  # re-export all components
+from croc.router import Router
+from croc.server import CrocServer
+from croc.state import State
+from croc.components import *  # re-export all components
 
 logger = logging.getLogger("croc")
 

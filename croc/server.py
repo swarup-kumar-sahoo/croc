@@ -7,8 +7,8 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from .router import Router
-from .components.base import Component
+from croc.router import Router
+from croc.components.base import Component
 
 logger = logging.getLogger("croc")
 
