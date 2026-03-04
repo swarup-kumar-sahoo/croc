@@ -148,6 +148,7 @@ def components():
                 croc.Text(f"Slider value: {state.slider_val}"),
             ]),
         ]),
+        
 
         # Progress
         croc.Card(title="Progress", children=[
