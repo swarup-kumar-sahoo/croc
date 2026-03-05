@@ -1,49 +1,37 @@
-<div align="center">
+# 🐊 croc-ui
 
-```
- ██████╗██████╗  ██████╗  ██████╗
-██╔════╝██╔══██╗██╔═══██╗██╔════╝
-██║     ██████╔╝██║   ██║██║     
-██║     ██╔══██╗██║   ██║██║     
-╚██████╗██║  ██║╚██████╔╝╚██████╗
- ╚═════╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝
-```
+> A Python library for building beautiful static websites using Python — no HTML/CSS required.
 
-### 🐊 Build web UIs in pure Python. No JavaScript. No HTML. No templates.
+[![Python](https://img.shields.io/badge/Python-3.8+-3b82f6?style=flat-square&logo=python)](https://python.org)
+[![GitHub](https://img.shields.io/badge/GitHub-swarup--kumar--sahoo/croc-181717?style=flat-square&logo=github)](https://github.com/swarup-kumar-sahoo/croc)
 
-[![PyPI version](https://img.shields.io/pypi/v/croc-ui?color=22c55e&labelColor=0f172a&style=for-the-badge)](https://pypi.org/project/croc-ui)
-[![Python](https://img.shields.io/pypi/pyversions/croc-ui?color=3b82f6&labelColor=0f172a&style=for-the-badge)](https://pypi.org/project/croc-ui)
-[![License](https://img.shields.io/pypi/l/croc-ui?color=f59e0b&labelColor=0f172a&style=for-the-badge)](https://github.com/swarup-kumar-sahoo/croc/blob/main/LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/swarup-kumar-sahoo/croc?color=ec4899&labelColor=0f172a&style=for-the-badge)](https://github.com/swarup-kumar-sahoo/croc)
-
-<br/>
-
-**croc** is a Python-first framework for building server-driven single-page apps.  
-Write components in Python → croc handles the rest.
-
-[Getting Started](#-quick-start) · [Components](#-components) · [Examples](#-examples) · [Roadmap](#-roadmap)
+**croc-ui** lets you build complete, styled static websites entirely in Python. Write Python classes, get beautiful HTML. Run locally with a built-in dev server.
 
 ---
 
-</div>
+## ✨ Features
 
-## ✨ Why croc?
-
-| | croc | Streamlit | Dash | Raw HTML/JS |
-|---|---|---|---|---|
-| Pure Python UI | ✅ | ✅ | ⚠️ | ❌ |
-| SPA routing | ✅ | ❌ | ✅ | ✅ |
-| Real-time WebSocket | ✅ | ✅ | ⚠️ | ✅ |
-| Component model | ✅ | ❌ | ✅ | ✅ |
-| Zero JS required | ✅ | ✅ | ❌ | ❌ |
-| Tailwind styling | ✅ | ❌ | ❌ | ✅ |
+- **30+ UI Components** — Cards, Navbars, Modals, Tabs, Tables, Accordions, Badges, Alerts, Forms, and more
+- **Fluent Style Builder** — Chain CSS properties with `Style().color("red").font_size("16px")`
+- **Theme System** — Built-in presets (`default`, `dark`, `ocean`, `forest`) or build your own
+- **Zero Dependencies** — Uses only Python's standard library
+- **Dev Server** — One-line local server with route registration, static file serving, and browser auto-open
+- **Page Builder** — Full HTML page with `<head>`, Google Fonts, icon libraries, and meta tags
 
 ---
 
-## 📦 Installation
+## 🚀 Installation
 
 ```bash
 pip install croc-ui
+```
+
+Or from source:
+
+```bash
+git clone https://github.com/swarup-kumar-sahoo/croc
+cd croc
+pip install -e .
 ```
 
 ---
@@ -51,148 +39,214 @@ pip install croc-ui
 ## ⚡ Quick Start
 
 ```python
-import croc
+from croc_ui import App, Page, Navbar, Container, H1, P, Button, Card, Theme
 
-app = croc.App(title="My App")
-state = croc.State(count=0)
+app = App()
 
-@app.page("/")
+@app.route("/")
 def home():
-    def increment():
-        state.count += 1
+    page = Page(
+        title="My Website",
+        theme=Theme("default"),
+        fonts=["Inter"],
+    )
+    page.add(
+        Navbar(brand="My Site", links=[("Home", "/"), ("About", "/about")], sticky=True),
+        Container(
+            H1("Welcome to My Site"),
+            P("Built entirely in Python with croc-ui.", style="color: var(--croc-text-muted);"),
+            Button("Get Started →", variant="primary"),
+        ),
+    )
+    return page
 
-    return croc.Page([
-        croc.Heading("🐊 Hello, croc!"),
-        croc.Text(f"You clicked {state.count} times"),
-        croc.Button("Click me!", on_click=increment),
-    ])
+@app.route("/about")
+def about():
+    page = Page(title="About")
+    page.add(
+        Container(
+            H1("About"),
+            Card(
+                P("This site was built with croc-ui — Python-powered web UI."),
+                title="About croc-ui",
+            )
+        )
+    )
+    return page
 
-app.run()  # → http://localhost:8000
+app.run(port=3000)
 ```
 
-That's it. **No HTML. No JS. No config.**
+Run it:
+```bash
+python app.py
+```
+
+Opens at **http://localhost:3000** 🎉
 
 ---
 
-## 🔧 How It Works
+## 📦 Component Reference
 
-```
-┌──────────────────────────────────────────┐
-│  Your Python App                         │
-│                                          │
-│   state = State(count=0)                 │
-│   state.count += 1  ──► triggers render  │
-│                              │           │
-│         Component Tree (JSON)│           │
-│              FastAPI + WebSocket         │
-└──────────────────────────────┼───────────┘
-                               │
-┌──────────────────────────────▼───────────┐
-│  Browser  (croc-client.js)               │
-│                                          │
-│   JSON tree ──► DOM (Tailwind CSS)       │
-│   click / input ──► WebSocket ──► Python │
-└──────────────────────────────────────────┘
-```
+### Layout
+| Component | Description |
+|-----------|-------------|
+| `Container` | Centered max-width wrapper |
+| `Row` | Flexbox row |
+| `Column` | Flex column with optional span |
+| `Section` | `<section>` block |
+| `Header` / `Footer` | Semantic header/footer |
+| `Div` | Generic `<div>` |
 
-1. 🐍 You write Python components and state
-2. 🔄 croc serializes the component tree to JSON over WebSocket
-3. 🌐 The browser renders it as a real DOM with Tailwind CSS
-4. ⚡ Events (clicks, inputs) are sent back to Python instantly
-5. 🔁 State change → automatic re-render, no manual DOM work
+### Typography
+| Component | Description |
+|-----------|-------------|
+| `H1`–`H6` | Headings |
+| `P` | Paragraph |
+| `Span` / `Text` | Inline text |
+| `Code` / `Pre` | Code blocks |
+| `Blockquote` | Quoted text |
+| `Label` | Form label with `for_` attribute |
 
----
+### Forms
+| Component | Description |
+|-----------|-------------|
+| `Form` | `<form>` with action/method |
+| `Input` | Text, email, password, number, etc. |
+| `Button` | 8 variants, 3 sizes |
+| `Textarea` | Multi-line text input |
+| `Select` + `Option` | Dropdown |
+| `Checkbox` / `Radio` | Boolean inputs |
+| `FileInput` | File upload |
+| `Range` | Slider |
 
-## 🧩 Components
+### Navigation
+| Component | Description |
+|-----------|-------------|
+| `Navbar` | Responsive top nav with brand + links |
+| `Sidebar` | Vertical nav panel |
+| `Breadcrumb` | Path breadcrumbs |
+| `Tabs` | Tabbed content panels |
+| `Pagination` | Page navigation |
 
-### 📐 Layout
-```python
-croc.Page([...])          # Top-level page wrapper
-croc.VStack([...])        # Vertical flex column
-croc.HStack([...])        # Horizontal flex row
-croc.Grid([...], cols=3)  # CSS Grid
-croc.Box([...])           # Generic container
-croc.Center([...])        # Centers children
-croc.Divider()            # Horizontal rule
-croc.Spacer()             # Flexible gap
-```
+### UI Components
+| Component | Description |
+|-----------|-------------|
+| `Card` | Content card with header/footer |
+| `Badge` | Inline status badge |
+| `Alert` | Dismissible alert message |
+| `Modal` | Overlay dialog |
+| `Tooltip` | Hover tooltip |
+| `Progress` | Progress bar |
+| `Spinner` | Loading spinner |
+| `Accordion` | Collapsible sections |
+| `Table` | Striped/hover data table |
+| `List` | Ordered/unordered list |
+| `Tag` | Removable filter tag |
+| `Divider` | Horizontal rule with optional label |
+| `Avatar` | Image or initials avatar |
 
-### ✍️ Text
-```python
-croc.Heading("Title", level=1)
-croc.Text("Hello!", size="lg", weight="bold")
-croc.Badge("new", variant="success")
-croc.Code("import croc", block=True)
-croc.Link("Docs", href="/docs")
-croc.Label("Name")
-```
-
-### 🎛️ Input
-```python
-croc.Button("Submit", on_click=handler, variant="primary")
-croc.Input(label="Name", on_change=handler)
-croc.Textarea(label="Message", rows=4)
-croc.Select(options=[("a","Option A")], on_change=handler)
-croc.Checkbox(label="Agree", on_change=handler)
-croc.Switch(label="Dark mode", on_change=handler)
-croc.Slider(min=0, max=100, on_change=handler)
-```
-
-### 📊 Display
-```python
-croc.Card(title="Stats", children=[...])
-croc.Alert("Success!", variant="success")
-croc.Table(columns=["Name","Age"], rows=[...])
-croc.Progress(value=75, max=100)
-croc.Spinner(size="md")
-croc.Avatar(name="Alice Smith")
-croc.Stat(label="Revenue", value="$12k", delta="+8%")
-croc.Image(src="/logo.png", alt="Logo")
-```
+### Media
+| Component | Description |
+|-----------|-------------|
+| `Img` | Image with lazy loading |
+| `Video` / `Audio` | Media elements |
+| `Icon` | Font Awesome / Bootstrap / Material icon |
+| `SVG` / `Path` | SVG elements |
 
 ---
 
-## 🗂️ Routing
+## 🎨 Styling
+
+### Inline styles (dict or string)
 
 ```python
-@app.page("/")
-def home():
-    return croc.Page([croc.Heading("Home")])
-
-@app.page("/dashboard")
-def dashboard():
-    return croc.Page([croc.Heading("Dashboard")])
-
-@app.not_found
-def not_found():
-    return croc.Page([croc.Heading("404 — Not Found")])
+H1("Hello", style={"color": "red", "font_size": "2rem"})
+H1("Hello", style="color: red; font-size: 2rem")
 ```
 
-Client-side navigation — **no page reload:**
+### Fluent Style builder
+
 ```python
-croc.Link("Dashboard", href="/dashboard")
+from croc_ui import Style
+
+s = Style().color("red").font_size("2rem").padding("1rem").background_color("#f0f0f0")
+H1("Hello", style=s)
+```
+
+### CSS classes
+
+```python
+Div("content", classes="my-class another-class")
+Div("content", classes=["my-class", "another-class"])
+```
+
+### Extra CSS on the Page
+
+```python
+page = Page(extra_css="""
+  .hero { background: linear-gradient(135deg, #3b82f6, #8b5cf6); }
+  .hero h1 { color: white; }
+""")
 ```
 
 ---
 
-## 🧠 State Management
+## 🎭 Themes
 
 ```python
-# Create reactive state
-state = croc.State(
-    name="Alice",
-    count=0,
-    dark=False,
+from croc_ui import Theme
+
+# Built-in presets: "default", "dark", "ocean", "forest"
+theme = Theme("dark")
+
+# Override individual tokens
+theme = Theme(
+    preset="default",
+    primary="#ff6b35",
+    font_family="'Playfair Display', serif",
+    border_radius="12px",
+    shadow="0 4px 20px rgba(0,0,0,0.15)",
 )
 
-# Read
-print(state.count)     # 0
+page = Page(theme=theme)
+```
 
-# Write — triggers re-render automatically
-state.count += 1
+---
 
-# Batch update
-state.update(name="Bob", count=10)
+## 🌐 App & Routing
+
+```python
+from croc_ui import App, Page
+
+app = App(static_dir="./static")  # optional static file directory
+
+# Decorator style
+@app.route("/")
+def home():
+    return Page(title="Home")
+
+# Programmatic
+app.add_route("/about", about_page_fn)
+app.add_page("/contact", contact_page_instance)
+
+# Run
+app.run(
+    host="127.0.0.1",  # default
+    port=3000,          # default
+    open_browser=True,  # auto-open browser
+)
+```
+
+---
+
+## 📄 Saving Static HTML
+
+```python
+page = Page(title="My Page")
+page.add(H1("Hello!"))
+page.save("index.html")      # saves rendered HTML to file
+print(page.render())         # get HTML string
 ```
 
 ---
@@ -200,39 +254,34 @@ state.update(name="Bob", count=10)
 ## 📁 Project Structure
 
 ```
-my-app/
-├── app.py          ← your croc app
-├── pages/
-│   ├── home.py
-│   └── dashboard.py
-└── requirements.txt
+croc-ui/
+├── croc_ui/
+│   ├── __init__.py         # Public API exports
+│   ├── app.py              # Dev server (App class)
+│   ├── page.py             # Page builder
+│   ├── base.py             # Element base classes
+│   ├── components/
+│   │   ├── layout.py       # Container, Row, Column, etc.
+│   │   ├── typography.py   # H1-H6, P, Code, etc.
+│   │   ├── forms.py        # Input, Button, Select, etc.
+│   │   ├── media.py        # Img, Video, Icon, SVG
+│   │   ├── navigation.py   # Navbar, Tabs, Pagination
+│   │   └── ui.py           # Card, Alert, Modal, Table, etc.
+│   └── styles/
+│       ├── style.py        # Fluent Style builder
+│       └── theme.py        # Theme system
+└── examples/
+    └── example_app.py      # Full showcase app
 ```
 
 ---
 
 ## 🤝 Contributing
 
-PRs and issues welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-```bash
-git clone https://github.com/swarup-kumar-sahoo/croc
-cd croc
-pip install -e ".[dev]"
-python examples/demo.py
-```
+Issues and PRs welcome at [https://github.com/swarup-kumar-sahoo/croc](https://github.com/swarup-kumar-sahoo/croc)
 
 ---
 
-## 📄 License
+## 📝 License
 
-MIT © [Swarup Kumar Sahoo](https://github.com/swarup-kumar-sahoo)
-
----
-
-<div align="center">
-
-**Made with 🐊 and Python**
-
-If croc helped you, give it a ⭐ on [GitHub](https://github.com/swarup-kumar-sahoo/croc)!
-
-</div>
+MIT License — © Swarup Kumar Sahoo

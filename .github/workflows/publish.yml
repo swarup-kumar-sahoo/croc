@@ -1,49 +1,43 @@
-name: Publish croc to PyPI
+name: Publish to PyPI
 
 on:
-  push:
-    tags:
-      - "v*.*.*"   # triggers on tags like v0.1.0, v1.0.0 etc.
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 1.0.1)'
+        required: false
 
 jobs:
-  build:
-    name: Build distribution
+  build-and-publish:
+    name: Build and publish to PyPI
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write  # Required for trusted publishing (no API token needed)
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
 
       - name: Install build tools
-        run: pip install build
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
 
-      - name: Build package
+      - name: Build distribution packages
         run: python -m build
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-  publish:
-    name: Publish to PyPI
-    runs-on: ubuntu-latest
-    needs: build
-    environment: pypi
-    permissions:
-      id-token: write   # required for trusted publishing
-
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
+      - name: Check distribution
+        run: twine check dist/*
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        # Uses PyPI Trusted Publishing — no API token needed!
+        # Just configure Trusted Publisher on pypi.org for this repo.
