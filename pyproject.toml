@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
 authors = [
-    { name = "Swarup Kumar Sahoo", email = "" }
+    { name = "Swarup Kumar Sahoo" }
 ]
 keywords = ["html", "css", "web", "ui", "static-site", "croc", "croc-ui", "python-web"]
 classifiers = [
