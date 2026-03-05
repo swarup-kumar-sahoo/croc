@@ -161,16 +161,34 @@ class App:
 
         url = f"http://{host}:{port}"
 
-        print(f"\n  🐊 croc-ui dev server")
-        print(f"  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        print(f"  🌐  Running at: \033[1;36m{url}\033[0m")
-        print(f"  📄  Routes registered: {len(self._routes)}")
+        CYAN    = "\033[1;36m"
+        GREEN   = "\033[0;32m"
+        YELLOW  = "\033[1;33m"
+        MAGENTA = "\033[1;35m"
+        DIM     = "\033[2m"
+        RESET   = "\033[0m"
+
+        logo = f"""
+{CYAN} ██████╗██████╗  ██████╗  ██████╗ {RESET}
+{CYAN}██╔════╝██╔══██╗██╔═══██╗██╔════╝{RESET}
+{CYAN}██║     ██████╔╝██║   ██║██║     {RESET}
+{CYAN}██║     ██╔══██╗██║   ██║██║     {RESET}
+{CYAN}╚██████╗██║  ██║╚██████╔╝╚██████╗{RESET}
+{CYAN} ╚═════╝╚═╝  ╚═╝ ╚═════╝  ╚═════╝{RESET}
+{DIM}  Python UI Library  v1.0.2{RESET}"""
+
+        bar = f"{DIM}  {'━' * 36}{RESET}"
+
+        print(logo)
+        print(bar)
+        print(f"  {GREEN}▶  Server{RESET}    {CYAN}{url}{RESET}")
+        print(f"  {GREEN}▶  Routes{RESET}    {YELLOW}{len(self._routes)} registered{RESET}")
         for p in self._routes:
-            print(f"       \033[0;32m→\033[0m {p}")
+            print(f"       {DIM}│{RESET}  {GREEN}{p}{RESET}")
         if self.static_dir:
-            print(f"  📁  Static dir: {self.static_dir}")
-        print(f"  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        print(f"  Press Ctrl+C to stop\n")
+            print(f"  {GREEN}▶  Static{RESET}    {self.static_dir}")
+        print(bar)
+        print(f"  {DIM}Press Ctrl+C to stop{RESET}\n")
 
         if open_browser:
             threading.Timer(0.5, lambda: webbrowser.open(url)).start()
